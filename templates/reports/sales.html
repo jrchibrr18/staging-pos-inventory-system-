@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Sales Report - {{ pos_name }}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 fw-bold"><i class="bi bi-receipt me-2"></i>Sales Report</h1>
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body">
+            <form class="row g-2 align-items-end" method="get">
+                <div class="col-auto">
+                    <label class="form-label small mb-0">Start Date</label>
+                    <input type="date" name="start" class="form-control form-control-sm" value="{{ start }}">
+                </div>
+                <div class="col-auto">
+                    <label class="form-label small mb-0">End Date</label>
+                    <input type="date" name="end" class="form-control form-control-sm" value="{{ end }}">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-sm btn-primary">Apply</button>
+                </div>
+                <div class="col-auto ms-auto">
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ url_for('reports.export_sales_csv') }}?start={{ start }}&end={{ end }}" class="btn btn-outline-secondary">CSV</a>
+                        <a href="{{ url_for('reports.export_sales_excel') }}?start={{ start }}&end={{ end }}" class="btn btn-outline-secondary">Excel</a>
+                        <a href="{{ url_for('reports.export_sales_pdf') }}?start={{ start }}&end={{ end }}" class="btn btn-outline-secondary">PDF</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <p class="mb-3"><strong>Total: ₱{{ "%.2f"|format(total) }}</strong> ({{ sales_data|length }} transactions)</p>
+            <div class="table-responsive">
+                <table class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th>Receipt</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Subtotal</th>
+                            <th>Discount</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in sales_data %}
+                        <tr>
+                            <td>{{ r.receipt }}</td>
+                            <td>{{ r.date }}</td>
+                            <td>{{ r.customer }}</td>
+                            <td class="small" style="max-width:200px;">{{ r.products }}</td>
+                            <td>₱{{ "%.2f"|format(r.subtotal) }}</td>
+                            <td>₱{{ "%.2f"|format(r.discount) }}</td>
+                            <td>₱{{ "%.2f"|format(r.total) }}</td>
+                            <td><span class="badge bg-success">{{ r.status }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="8" class="text-center text-muted">No sales in date range</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

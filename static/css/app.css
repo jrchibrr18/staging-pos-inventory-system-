@@ -1,0 +1,113 @@
+/* POS System - Modern POS Interface */
+:root {
+    --pos-primary: #0d6efd;
+    --pos-success: #198754;
+    --pos-warning: #ffc107;
+    --pos-danger: #dc3545;
+    --pos-bg: #f8f9fa;
+    --pos-card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+[data-bs-theme="dark"] {
+    --pos-bg: #212529;
+}
+
+body {
+    background-color: var(--pos-bg);
+    transition: background-color 0.3s ease;
+}
+
+/* Navbar */
+.navbar-brand {
+    font-size: 1.25rem;
+}
+
+.nav-link.active {
+    font-weight: 600;
+}
+
+/* KPI Cards */
+.kpi-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+}
+
+/* POS Interface - Touch Friendly */
+.pos-container .pos-product-btn {
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 90px;
+}
+
+.pos-container .pos-product-btn:hover {
+    background-color: var(--bs-primary);
+    color: white !important;
+    border-color: var(--bs-primary) !important;
+}
+
+.pos-container .pos-product-btn:hover .text-primary {
+    color: white !important;
+}
+
+.pos-container .pos-product-btn:hover .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Large touch targets for POS */
+@media (min-width: 768px) {
+    .pos-container .pos-product-btn {
+        min-height: 100px;
+    }
+}
+
+/* Category buttons */
+.category-btn.active {
+    background-color: var(--bs-primary);
+    color: white;
+    border-color: var(--bs-primary);
+}
+
+/* Cards */
+.card {
+    transition: box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 255, 0.05) !important;
+}
+
+/* Tables */
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+/* Dark mode adjustments */
+[data-bs-theme="dark"] .card {
+    background-color: #2d3238;
+}
+
+[data-bs-theme="dark"] .card-header {
+    background-color: #252a30 !important;
+}
+
+[data-bs-theme="dark"] .bg-light {
+    background-color: #252a30 !important;
+}
+
+/* Smooth transitions */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+}

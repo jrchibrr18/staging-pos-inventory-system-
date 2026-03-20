@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - {{ pos_name }}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 fw-bold"><i class="bi bi-speedometer2 me-2"></i>Dashboard</h1>
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100 kpi-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Today's Sales</p>
+                            <h3 class="mb-0 fw-bold text-primary">₱{{ "%.2f"|format(summary.total) }}</h3>
+                            <small class="text-muted">{{ summary.count }} transactions</small>
+                        </div>
+                        <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                            <i class="bi bi-cash-stack text-primary fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100 kpi-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Monthly Revenue</p>
+                            <h3 class="mb-0 fw-bold text-success">₱{{ "%.2f"|format(monthly_total) }}</h3>
+                        </div>
+                        <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                            <i class="bi bi-graph-up-arrow text-success fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100 kpi-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Low Stock Alerts</p>
+                            <h3 class="mb-0 fw-bold text-warning">{{ low_stock|length }}</h3>
+                        </div>
+                        <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+                            <i class="bi bi-exclamation-triangle text-warning fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card border-0 shadow-sm h-100 kpi-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <p class="text-muted mb-1 small text-uppercase">Expiring Soon</p>
+                            <h3 class="mb-0 fw-bold text-danger">{{ expiring|length }}</h3>
+                        </div>
+                        <div class="rounded-circle bg-danger bg-opacity-10 p-3">
+                            <i class="bi bi-calendar-x text-danger fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Sales Trend (7 Days)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="salesChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0"><i class="bi bi-trophy me-2"></i>Top Products (30d)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="topProductsChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mt-1">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Low Stock</h5>
+                    <a href="{{ url_for('inventory.products') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    {% if low_stock %}
+                    <ul class="list-group list-group-flush">
+                        {% for p in low_stock[:5] %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>{{ p.name }}</span>
+                            <span class="badge bg-warning">{{ p.quantity }} {{ p.unit }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted text-center py-4 mb-0">No low stock items</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-calendar-x me-2 text-danger"></i>Expiring Soon (14 days)</h5>
+                    <a href="{{ url_for('inventory.products') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    {% if expiring %}
+                    <ul class="list-group list-group-flush">
+                        {% for p in expiring[:5] %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>{{ p.name }}</span>
+                            <span class="badge bg-danger">{{ p.expiry_date }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted text-center py-4 mb-0">No expiring items</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Sales trend
+    fetch('/dashboard/api/sales-trend')
+        .then(r => r.json())
+        .then(data => {
+            new Chart(document.getElementById('salesChart'), {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Sales (₱)',
+                        data: data.data,
+                        borderColor: 'rgb(13, 110, 253)',
+                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        });
+
+    // Top products
+    fetch('/dashboard/api/top-products')
+        .then(r => r.json())
+        .then(data => {
+            new Chart(document.getElementById('topProductsChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        data: data.data,
+                        backgroundColor: [
+                            'rgba(13, 110, 253, 0.8)',
+                            'rgba(25, 135, 84, 0.8)',
+                            'rgba(255, 193, 7, 0.8)',
+                            'rgba(220, 53, 69, 0.8)',
+                            'rgba(111, 66, 193, 0.8)',
+                            'rgba(13, 202, 240, 0.8)',
+                            'rgba(253, 126, 20, 0.8)',
+                            'rgba(32, 201, 151, 0.8)',
+                            'rgba(102, 16, 242, 0.8)',
+                            'rgba(214, 51, 132, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+        });
+});
+</script>
+{% endblock %}

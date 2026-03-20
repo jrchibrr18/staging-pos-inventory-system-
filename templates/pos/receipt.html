@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt - {{ sale.receipt_number }}</title>
+    <style>
+        @media print { 
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } 
+            @page { margin: 0; }
+        }
+        body { 
+            font-family: 'Courier New', monospace; 
+            max-width: 80mm; 
+            margin: 0 auto; 
+            padding: 20px 10px; 
+            font-size: 13px; 
+            line-height: 1.2;
+            color: #000;
+        }
+        .center { text-align: center; }
+        .bold { font-weight: bold; }
+        .text-uppercase { text-transform: uppercase; }
+        
+        hr { border: none; border-top: 1px solid #000; margin: 8px 0; }
+        .double-hr { border-top: 3px double #000; border-bottom: none; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        .items-table th { text-align: left; border-bottom: 1px solid #000; padding-bottom: 5px; }
+        .items-table td { padding: 3px 0; vertical-align: top; }
+        .right { text-align: right; }
+        .qty-col { text-align: center; width: 40px; }
+        
+        .total-row { font-size: 16px; font-weight: bold; }
+        .footer { margin-top: 20px; font-size: 11px; }
+        
+        #barcode { margin: 10px auto; display: block; }
+    </style>
+</head>
+<body>
+    <div class="center bold text-uppercase" style="font-size: 18px;">{{ pos_name }}</div>
+    <div class="center">
+        123 Business Lane, City Center<br>
+        Tel: +63 912 345 6789
+    </div>
+    
+    <hr class="double-hr">
+    
+    <table style="font-size: 11px;">
+        <tr>
+            <td>Cashier: {{ sale.cashier.username if sale.cashier else 'System' }}</td>
+            <td class="right">#{{ sale.id }}</td>
+        </tr>
+        <tr>
+            <td>Date: {{ sale.created_at.strftime('%m/%d/%Y %H:%M') }}</td>
+            <td class="right">{% if sale.receipt_number %}{{ sale.receipt_number }}{% endif %}</td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="qty-col">Qty</th>
+                <th class="right">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in sale.items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td class="qty-col">{{ item.quantity }}</td>
+                <td class="right">₱{{ "%.2f"|format(item.total) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr class="double-hr">
+
+    <table>
+        <tr>
+            <td class="bold" style="font-size: 14px;">Sub Total</td>
+            <td class="right bold" style="font-size: 14px;">₱{{ "%.2f"|format(sale.subtotal) }}</td>
+        </tr>
+        {% if sale.discount_total and sale.discount_total > 0 %}
+        <tr>
+            <td>Discount</td>
+            <td class="right">-₱{{ "%.2f"|format(sale.discount_total) }}</td>
+        </tr>
+        {% endif %}
+        <tr class="total-row">
+            <td>TOTAL</td>
+            <td class="right">₱{{ "%.2f"|format(sale.total_amount) }}</td>
+        </tr>
+        
+        <tr><td colspan="2" style="padding-top: 5px;"></td></tr> <tr style="font-size: 13px;">
+            <td class="bold">CASH RECEIVED</td>
+            <td class="right bold">₱{{ "%.2f"|format(sale.amount_received) }}</td>
+        </tr>
+        <tr style="font-size: 13px;">
+            <td class="bold">CHANGE</td>
+            <td class="right bold">₱{{ "%.2f"|format(sale.amount_received - sale.total_amount) }}</td>
+        </tr>
+    </table>
+
+    <div class="footer center">
+        <hr>
+        <svg id="barcode"></svg>
+        <div class="bold">THANK YOU!</div>
+        <div>Glad to see you again!</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script>
+        window.onload = function() {
+            JsBarcode("#barcode", "{{ sale.receipt_number or sale.id }}", {
+                format: "CODE128",
+                width: 1.2,
+                height: 40,
+                displayValue: false,
+                lineColor: "#000"
+            });
+            
+            // Auto-print only if not in preview mode (optional)
+            // window.print();
+        };
+    </script>
+</body>
+</html>

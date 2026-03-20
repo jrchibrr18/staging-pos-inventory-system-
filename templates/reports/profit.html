@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Profit Report - {{ pos_name }}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 fw-bold"><i class="bi bi-currency-dollar me-2"></i>Profit & Margin Report</h1>
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body">
+            <form class="row g-2 align-items-end" method="get">
+                <div class="col-auto">
+                    <label class="form-label small mb-0">Start Date</label>
+                    <input type="date" name="start" class="form-control form-control-sm" value="{{ start }}">
+                </div>
+                <div class="col-auto">
+                    <label class="form-label small mb-0">End Date</label>
+                    <input type="date" name="end" class="form-control form-control-sm" value="{{ end }}">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-sm btn-primary">Apply</button>
+                </div>
+                <div class="col-auto ms-auto">
+                    <div class="btn-group btn-group-sm">
+                        <a href="{{ url_for('reports.export_profit_csv') }}?start={{ start }}&end={{ end }}" class="btn btn-outline-secondary">CSV</a>
+                        <a href="{{ url_for('reports.export_profit_excel') }}?start={{ start }}&end={{ end }}" class="btn btn-outline-secondary">Excel</a>
+                        <a href="{{ url_for('reports.export_profit_pdf') }}?start={{ start }}&end={{ end }}" class="btn btn-outline-secondary">PDF</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row g-3 mb-3">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted small text-uppercase mb-1">Revenue</h6>
+                    <h5 class="mb-0 text-success">₱{{ "%.2f"|format(revenue) }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted small text-uppercase mb-1">Cost (COGS)</h6>
+                    <h5 class="mb-0 text-danger">₱{{ "%.2f"|format(cost) }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted small text-uppercase mb-1">Profit / Income</h6>
+                    <h5 class="mb-0 text-primary">₱{{ "%.2f"|format(profit) }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted small text-uppercase mb-1">Margin %</h6>
+                    <h5 class="mb-0">{% if revenue %}{{ "%.1f"|format(margin_pct) }}%{% else %}0%{% endif %}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-3">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h6 class="mb-0">Best Selling Products (Top 20)</h6>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr><th>Product</th><th>Qty Sold</th><th>Sales (₱)</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for b in best_selling %}
+                            <tr>
+                                <td>{{ b.name }}</td>
+                                <td>{{ b.quantity }}</td>
+                                <td>₱{{ "%.2f"|format(b.sales) }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="3" class="text-center text-muted">No data</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

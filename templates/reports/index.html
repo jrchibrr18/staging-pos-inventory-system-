@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Reports - {{ pos_name }}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 fw-bold"><i class="bi bi-graph-up me-2"></i>Reports</h1>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-receipt me-2"></i>Sales Reports</h5>
+                    <p class="card-text text-muted small">Daily, weekly, monthly sales reports with export options.</p>
+                    <a href="{{ url_for('reports.sales') }}" class="btn btn-primary">View Sales</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-box-seam me-2"></i>Inventory Movement</h5>
+                    <p class="card-text text-muted small">Stock in/out/adjustment history and movement logs.</p>
+                    <a href="{{ url_for('reports.inventory') }}" class="btn btn-primary">View Inventory</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-currency-dollar me-2"></i>Profit & Margin</h5>
+                    <p class="card-text text-muted small">Best-selling products and profit overview.</p>
+                    <a href="{{ url_for('reports.profit') }}" class="btn btn-primary">View Profit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

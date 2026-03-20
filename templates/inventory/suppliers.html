@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Suppliers - {{ pos_name }}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 fw-bold"><i class="bi bi-truck me-2"></i>Suppliers</h1>
+        <a href="{{ url_for('inventory.supplier_new') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Add Supplier</a>
+    </div>
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Name</th><th>Contact</th><th>Phone</th><th></th></tr>
+                </thead>
+                <tbody>
+                    {% for s in suppliers %}
+                    <tr>
+                        <td>{{ s.name }}</td>
+                        <td>{{ s.contact_person or '-' }}</td>
+                        <td>{{ s.phone or '-' }}</td>
+                        <td><a href="{{ url_for('inventory.supplier_edit', id=s.id) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-center text-muted">No suppliers</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

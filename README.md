@@ -1,2 +1,2 @@
-# staging-pos-inventory-system-
-For testing and debugging.
+# generic-pos-inventory-system
+Python Flask POS and Inventory System
