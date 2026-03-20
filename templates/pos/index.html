@@ -117,6 +117,7 @@
 
 {% block extra_js %}
 <script>
+console.log('[POS] script loaded');
 const cart = [];
 let totalToPay = 0;
 
@@ -125,6 +126,79 @@ const API = {
     customers: '/pos/api/customers',
     createSale: '/pos/api/sale'
 };
+
+const productGrid = document.getElementById('productGrid');
+const categoryButtons = document.querySelectorAll('.category-btn');
+console.log('[POS] productGrid', productGrid, 'categoryButtons', categoryButtons.length);
+
+function renderProductTiles(products) {
+    productGrid.innerHTML = '';
+
+    if (!products || products.length === 0) {
+        productGrid.innerHTML = '<div class="col-12 text-center text-muted">No products found</div>';
+        return;
+    }
+
+    products.forEach((p) => {
+        const tile = document.createElement('div');
+        tile.className = 'col-4 col-md-3 col-lg-2 product-tile';
+        tile.dataset.id = p.id;
+        tile.dataset.name = p.name;
+        tile.dataset.price = p.price;
+        tile.dataset.qty = p.quantity;
+
+        const productName = p.name ? p.name.trim() : 'Unnamed Product';
+        tile.innerHTML = `
+            <div class="pos-product-btn p-3 text-center rounded border cursor-pointer h-100 d-flex flex-column justify-content-center bg-white shadow-sm">
+                <strong class="d-block text-truncate small">${productName}</strong>
+                <span class="text-primary fw-bold">₱${parseFloat(p.price).toFixed(2)}</span>
+                <small class="text-muted">${p.quantity} left</small>
+            </div>
+        `;
+
+        productGrid.appendChild(tile);
+    });
+}
+
+async function loadProducts(categoryId = '') {
+    try {
+        let url = API.products;
+        if (categoryId) {
+            url += '?category_id=' + encodeURIComponent(categoryId);
+        }
+
+        console.log('[POS] fetch products', url);
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to load products (status: ${response.status})`);
+        }
+
+        const data = await response.json();
+        console.log('[POS] products loaded', data.length, 'items');
+        renderProductTiles(data);
+    } catch (err) {
+        console.error('[POS] product load error:', err);
+        alert('Unable to load products. Please refresh the page.');
+    }
+}
+
+categoryButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+        categoryButtons.forEach((b) => {
+            b.classList.remove('btn-primary', 'active');
+            b.classList.add('btn-outline-primary');
+        });
+
+        btn.classList.remove('btn-outline-primary');
+        btn.classList.add('btn-primary', 'active');
+
+        const catId = btn.dataset.category || '';
+        loadProducts(catId);
+    });
+});
+
+// Initial load to sync client/worker on refresh
+loadProducts('');
 
 function renderCart() {
     const tbody = document.getElementById('cartBody');

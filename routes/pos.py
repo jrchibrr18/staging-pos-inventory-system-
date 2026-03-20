@@ -24,13 +24,17 @@ def index():
 def api_products():
     """REST API: List products for POS (with optional category filter)."""
     category_id = request.args.get('category_id', type=int)
-    q = Product.query.filter(Product.quantity > 0)
+    q = Product.query.filter(
+        Product.quantity > 0,
+        Product.name.isnot(None),
+        Product.name != ''
+    )
     if category_id:
         q = q.filter(Product.category_id == category_id)
     products = q.order_by(Product.name).all()
     return jsonify([{
         'id': p.id,
-        'name': p.name,
+        'name': p.name.strip() if p.name else 'Unnamed Product',
         'sku': p.sku,
         'barcode': p.barcode,
         'price': float(p.selling_price),

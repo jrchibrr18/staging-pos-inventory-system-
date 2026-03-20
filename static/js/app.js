@@ -20,6 +20,7 @@
 
     function applyTheme(theme) {
         document.documentElement.setAttribute('data-bs-theme', theme);
+        document.body.setAttribute('data-bs-theme', theme);
         const icon = document.querySelector('#themeToggle i');
         if (icon) {
             icon.className = theme === DARK ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';

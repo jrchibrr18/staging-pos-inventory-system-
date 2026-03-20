@@ -12,9 +12,34 @@
     --pos-bg: #212529;
 }
 
-body {
+body,
+main,
+.container,
+.pos-container,
+#sidebarPanel,
+.card,
+.table {
     background-color: var(--pos-bg);
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark-mode baseline to avoid white flash on transitions */
+html[data-bs-theme='dark'],
+body[data-bs-theme='dark'],
+main[data-bs-theme='dark'],
+.container[data-bs-theme='dark'],
+.pos-container[data-bs-theme='dark'],
+#sidebarPanel[data-bs-theme='dark'],
+.card[data-bs-theme='dark'],
+.table[data-bs-theme='dark'] {
+    background-color: #121212 !important;
+    color: #f8f9fa !important;
+}
+
+html[data-bs-theme='light'],
+body[data-bs-theme='light'] {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
 }
 
 /* Navbar */
@@ -37,24 +62,30 @@ body {
 }
 
 /* POS Interface - Touch Friendly */
-.pos-container .pos-product-btn {
+.pos-container .pos-product-btn,
+.pos-container .product-tile:hover .pos-product-btn {
     cursor: pointer;
-    transition: all 0.2s;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease;
     min-height: 90px;
 }
 
-.pos-container .pos-product-btn:hover {
-    background-color: var(--bs-primary);
-    color: white !important;
-    border-color: var(--bs-primary) !important;
+.pos-container .pos-product-btn:hover,
+.pos-container .product-tile:hover .pos-product-btn {
+    background-color: #0d6efd !important;
+    color: #fff !important;
+    border-color: #0d6efd !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 0.6rem 1.2rem rgba(13, 110, 253, 0.35) !important;
 }
 
-.pos-container .pos-product-btn:hover .text-primary {
-    color: white !important;
+.pos-container .pos-product-btn:hover .text-primary,
+.pos-container .product-tile:hover .pos-product-btn .text-primary {
+    color: #fff !important;
 }
 
-.pos-container .pos-product-btn:hover .text-muted {
-    color: rgba(255, 255, 255, 0.8) !important;
+.pos-container .pos-product-btn:hover .text-muted,
+.pos-container .product-tile:hover .pos-product-btn .text-muted {
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .cursor-pointer {
@@ -92,6 +123,21 @@ body {
 /* Dark mode adjustments */
 [data-bs-theme="dark"] .card {
     background-color: #2d3238;
+    border-color: #373f47 !important;
+}
+
+[data-bs-theme="dark"] .card-body,
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .table,
+[data-bs-theme="dark"] .table thead,
+[data-bs-theme="dark"] .table tbody,
+[data-bs-theme="dark"] .table-hover tbody tr,
+[data-bs-theme="dark"] .btn,
+[data-bs-theme="dark"] .btn-outline-primary,
+[data-bs-theme="dark"] .dropdown-menu {
+    background-color: #2d3238 !important;
+    color: #f8f9fa !important;
+    border-color: #373f47 !important;
 }
 
 [data-bs-theme="dark"] .card-header {
@@ -100,6 +146,27 @@ body {
 
 [data-bs-theme="dark"] .bg-light {
     background-color: #252a30 !important;
+}
+
+[data-bs-theme="dark"] .bg-white,
+[data-bs-theme="dark"] .pos-container .pos-product-btn {
+    background-color: #2d3238 !important;
+    color: #f8f9fa !important;
+    border-color: #373f47 !important;
+}
+
+[data-bs-theme="dark"] .text-dark,
+[data-bs-theme="dark"] .text-body {
+    color: #f8f9fa !important;
+}
+
+[data-bs-theme="dark"] #sidebarPanel .table thead th,
+[data-bs-theme="dark"] #sidebarPanel .table tbody td,
+[data-bs-theme="dark"] #sidebarPanel .table thead,
+[data-bs-theme="dark"] #sidebarPanel .table {
+    background-color: #2a3139 !important;
+    color: #f8f9fa !important;
+    border-color: #373f47 !important;
 }
 
 /* Smooth transitions */
